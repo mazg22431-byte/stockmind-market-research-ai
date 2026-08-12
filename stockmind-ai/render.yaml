@@ -1,0 +1,97 @@
+# Render service spec for automating deployment of StockMind Market Research
+# Customize the placeholders (JWT_SECRET, REDIS_URL) and review before committing.
+# After pushing to GitHub, in Render select "Create new from Render YAML" and follow prompts.
+
+services:
+  - type: web_service
+    name: stockmind-api
+    env: docker
+    branch: main
+    root: backend
+    repo: .
+    plan: starter
+    autoDeploy: true
+    # Dockerfile in backend will be used; no startCommand override required
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: stockmind-db
+          property: connectionString
+      - key: REDIS_URL
+        # Replace with the Redis connection string provided by Render or your Redis provider
+        value: "redis://REPLACE_WITH_REDIS_URL:6379/0"
+      - key: JWT_SECRET
+        value: "REPLACE_WITH_LONG_RANDOM_SECRET"
+      - key: CORS_ORIGINS
+        value: "https://stockmind-frontend.onrender.com"
+
+  - type: background_worker
+    name: stockmind-worker
+    env: docker
+    branch: main
+    root: backend
+    repo: .
+    plan: starter
+    autoDeploy: true
+    startCommand: "celery -A app.tasks worker --loglevel=INFO"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: stockmind-db
+          property: connectionString
+      - key: REDIS_URL
+        value: "redis://REPLACE_WITH_REDIS_URL:6379/0"
+      - key: JWT_SECRET
+        value: "REPLACE_WITH_LONG_RANDOM_SECRET"
+
+  # Optional: scheduler for periodic tasks (celery-beat). Uncomment to enable.
+  # - type: background_worker
+  #   name: stockmind-beat
+  #   env: docker
+  #   branch: main
+  #   root: backend
+  #   repo: .
+  #   plan: starter
+  #   autoDeploy: true
+  #   startCommand: "celery -A app.core.celery beat -l info"
+  #   envVars:
+  #     - key: DATABASE_URL
+  #       fromDatabase:
+  #         name: stockmind-db
+  #         property: connectionString
+  #     - key: REDIS_URL
+  #       value: "redis://REPLACE_WITH_REDIS_URL:6379/0"
+  #     - key: JWT_SECRET
+  #       value: "REPLACE_WITH_LONG_RANDOM_SECRET"
+
+  - type: static_site
+    name: stockmind-frontend
+    env: static
+    branch: main
+    root: frontend
+    repo: .
+    plan: free
+    autoDeploy: true
+    buildCommand: "" # index.html is static; leave blank if no build step
+    publishPath: "/"
+    envVars:
+      - key: API_BASE_URL
+        value: "https://stockmind-api.onrender.com" # replace with the actual API URL after deployment
+
+databases:
+  - name: stockmind-db
+    engine: postgresql
+    version: 16
+    plan: starter
+    disk: 10
+
+# Notes and next steps:
+# 1. Commit and push this render.yaml to your GitHub repository's main branch.
+# 2. In Render, choose "Create new from Render YAML" and connect the GitHub repo.
+# 3. Render will create the Postgres database automatically. For Redis, create a managed Redis instance
+#    in Render (or another provider) and then edit the services' REDIS_URL values to the provided connection string.
+# 4. Replace JWT_SECRET with a long random value and add any other provider API keys as env vars via the Render dashboard
+#    (do NOT commit secrets into the repository; keep placeholders here).
+# 5. If builds fail because of PyTorch/transformers binary issues, consider using a different base image or pinning torch
+#    to a compatible CPU wheel. The Dockerfile in backend has been updated to help with common ML deps.
+# 6. After deployment, verify /docs or /health endpoints and the static site.

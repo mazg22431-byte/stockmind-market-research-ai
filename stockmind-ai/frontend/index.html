@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StockMind Market Research — IDX AI Analysis</title>
+<style>
+:root{--bg:#080b12;--panel:#0f141f;--panel2:#131a27;--line:#202a3a;--text:#eef3fb;--muted:#8e9bb0;--green:#35d07f;--red:#ff6178;--blue:#5d8cff;--gold:#f3c969;--cyan:#55d6ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 70% -10%,#17213c 0,#080b12 38%);color:var(--text);font:14px Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}.sidebar{border-right:1px solid var(--line);padding:22px 16px;background:#090d15}.brand{font-size:20px;font-weight:800;margin:0 8px 26px}.brand span{color:var(--cyan)}.nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:var(--muted);text-align:left;padding:11px 12px;border-radius:10px}.nav button.active,.nav button:hover{background:#151d2c;color:#fff}.nav small{display:block;color:#5f6b7d;padding:20px 12px 8px;text-transform:uppercase;letter-spacing:.12em}.main{padding:24px 28px;max-width:1500px;width:100%;margin:auto}.top{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:22px}.search{display:flex;gap:8px;flex:1;max-width:560px}.search input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:#fff;padding:12px 14px;outline:none}.search button,.primary{background:var(--blue);border:0;color:#fff;padding:11px 15px;border-radius:10px;font-weight:700}.pill{border:1px solid var(--line);background:var(--panel);padding:9px 12px;border-radius:10px;color:var(--muted)}.hero{display:grid;grid-template-columns:1.6fr 1fr;gap:16px}.card{background:linear-gradient(180deg,#101723,#0c111a);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 12px 30px #0003}.ticker{display:flex;align-items:end;gap:12px}.ticker h1{font-size:30px;margin:0}.price{font-size:28px;font-weight:800}.up{color:var(--green)}.down{color:var(--red)}.muted{color:var(--muted)}.chart{height:290px;margin-top:10px}.chart svg{width:100%;height:100%}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px}.metric .label{color:var(--muted);font-size:12px}.metric .value{font-size:22px;font-weight:800;margin:7px 0}.bar{height:7px;background:#1b2433;border-radius:99px;overflow:hidden}.fill{height:100%;border-radius:99px;background:var(--green)}.dashboard{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:16px;margin-top:16px}.score{display:flex;align-items:center;gap:18px}.ring{width:112px;height:112px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) 0 76%,#1a2432 76%)}.ring:after{content:"";width:84px;height:84px;border-radius:50%;background:#101723;position:absolute}.ring b{position:relative;z-index:2;font-size:26px}.row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #1b2330}.tag{font-size:11px;border-radius:99px;padding:4px 8px;background:#172232;color:#a9bad2}.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.section-title h2{font-size:16px;margin:0}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:10px 7px;border-bottom:1px solid #1b2330}.table th{color:var(--muted);font-size:11px;text-transform:uppercase}.builder{display:grid;grid-template-columns:1fr 1fr;gap:12px}.rule{background:#151d2a;border:1px solid #263249;border-radius:10px;padding:11px;display:grid;grid-template-columns:110px 1fr 90px 34px;gap:7px;align-items:center}.rule select,.rule input{background:#0b111b;border:1px solid #2a3548;color:#eaf0f8;padding:8px;border-radius:7px}.danger{background:transparent;border:0;color:var(--red);font-size:18px}.add{border:1px dashed #344157;background:transparent;color:#aab7c9;padding:10px;border-radius:9px}.backtest{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.btbox{background:#121a27;border-radius:10px;padding:12px}.btbox b{font-size:20px}.hidden{display:none}.tabs{display:flex;gap:8px;margin-bottom:14px}.tabs button{background:var(--panel);border:1px solid var(--line);color:var(--muted);padding:9px 12px;border-radius:8px}.tabs button.active{color:#fff;border-color:#405170}.notice{padding:10px 12px;background:#1a1820;border:1px solid #44313a;color:#d7c6cc;border-radius:9px;font-size:12px;margin-top:12px}
+@media(max-width:1000px){.app{grid-template-columns:1fr}.sidebar{display:none}.hero,.dashboard{grid-template-columns:1fr}.grid4,.backtest{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.main{padding:15px}.grid4,.backtest,.builder{grid-template-columns:1fr}.top{align-items:stretch;flex-direction:column}.rule{grid-template-columns:1fr 1fr}.rule .danger{grid-column:2}}
+</style>
+
+<style id="stockmind-market-research-extension">
+/* StockMind Market Research extension */
+.sm-logo{display:flex;align-items:center;gap:10px;margin:0 8px 24px}
+.sm-logo img{width:42px;height:42px;object-fit:contain;border-radius:12px;filter:drop-shadow(0 8px 12px rgba(56,189,248,.2))}
+.sm-logo .title{font-weight:900;font-size:18px;line-height:1.05}
+.sm-logo .title span{display:block;color:#38bdf8}
+.sm-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px;margin-bottom:14px;border:1px solid rgba(125,211,252,.16);border-radius:16px;background:linear-gradient(135deg,rgba(15,23,42,.82),rgba(30,41,59,.58));box-shadow:0 12px 28px rgba(0,0,0,.18)}
+.toolbar-logo{width:180px;padding:5px 6px;border-radius:10px;background:rgba(2,6,23,.42);border:1px solid rgba(125,211,252,.12);box-shadow:0 8px 20px rgba(0,0,0,.16)}
+.toolbar-logo img{display:block;width:100%;height:auto}
+.sm-tool{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:13px!important}
+.sm-tool .icon3d{font-size:19px;display:inline-grid;place-items:center;width:28px;height:28px;border-radius:9px;background:linear-gradient(145deg,#38bdf8,#7c3aed);box-shadow:0 5px 0 #172554,0 8px 16px rgba(56,189,248,.18),inset 0 1px 0 rgba(255,255,255,.28);transform:translateZ(5px) rotate(-4deg)}
+.icon3d{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:11px;background:linear-gradient(145deg,#38bdf8,#8b5cf6);box-shadow:0 6px 0 #172554,0 12px 20px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.35);text-shadow:0 2px 0 rgba(0,0,0,.22)}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.feature-card{position:relative;overflow:hidden}
+.feature-card:before{content:"";position:absolute;inset:-40% -10% auto auto;width:150px;height:150px;background:radial-gradient(circle,rgba(56,189,248,.14),transparent 70%);pointer-events:none}
+.feature-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.feature-head h2{margin:0;font-size:17px}
+.live-dot{width:9px;height:9px;border-radius:50%;background:#34d399;box-shadow:0 0 15px #34d399}
+.news-layout{display:grid;grid-template-columns:1.05fr 1.6fr;gap:14px}
+.news-list{display:grid;gap:10px;max-height:620px;overflow:auto}
+.news-item{padding:13px;border:1px solid rgba(148,163,184,.14);border-radius:13px;background:rgba(15,23,42,.58);cursor:pointer}
+.news-item:hover{border-color:rgba(56,189,248,.35);transform:translateY(-2px)}
+.news-meta{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:#8fa3bd;margin-bottom:6px}
+.news-title{font-weight:750;line-height:1.35}
+.news-source{font-size:11px;color:#7dd3fc;margin-top:7px}
+.hype{color:#fbbf24;font-weight:800}
+.post-box{min-height:280px;white-space:pre-wrap;line-height:1.55}
+.data-status{display:inline-flex;align-items:center;gap:7px;padding:5px 9px;border-radius:999px;background:rgba(251,191,36,.10);color:#fcd34d;font-size:11px}
+.broker-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:14px}
+.flow-box{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.flow-chip{padding:12px;border-radius:12px;background:rgba(2,6,23,.55);border:1px solid rgba(148,163,184,.12)}
+.flow-chip b{display:block;font-size:18px;margin-top:4px}
+.preset-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.preset-tabs button.active{outline:2px solid rgba(56,189,248,.35);border-color:rgba(56,189,248,.55)!important}
+.rule-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.rule-chip{padding:7px 10px;border-radius:999px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.23);font-size:12px}
+.astro-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:14px}
+.stage-card{display:grid;grid-template-columns:38px 1fr 70px;align-items:center;gap:10px;padding:11px;border-bottom:1px solid rgba(148,163,184,.10)}
+.stage-card:last-child{border-bottom:0}
+.stage-score{font-weight:900;text-align:right}
+.date-badge{font-variant-numeric:tabular-nums}
+.timeline{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:16px}
+.timeline .node{padding:10px 8px;text-align:center;border-radius:13px;background:linear-gradient(145deg,rgba(59,130,246,.14),rgba(139,92,246,.10));border:1px solid rgba(148,163,184,.12)}
+.search-row{display:flex;gap:8px;flex-wrap:wrap}
+.search-row input{flex:1;min-width:180px}
+.metric .big{font-size:25px;font-weight:900}
+@media(max-width:1100px){.feature-grid,.astro-grid,.broker-grid,.news-layout{grid-template-columns:1fr}.timeline{grid-template-columns:repeat(2,1fr)}}
+</style>
+
+<style id="stockmind-text-brand-style">
+.sm-text-logo{font-weight:900;font-size:28px;line-height:1;letter-spacing:-.035em;white-space:nowrap;display:flex;align-items:baseline;gap:9px}
+.sm-text-logo .stock{color:#35d07f}.sm-text-logo .mind{color:#ff6178}.sm-text-logo .sub{display:inline;color:#d7deea;font-size:15px;font-weight:800;letter-spacing:.02em;margin:0;text-transform:none}
+.sidebar .sm-text-logo{font-size:31px;margin:0 8px 30px}.sidebar .sm-text-logo .sub{font-size:14px}
+#stockmindLogin .sm-text-logo{justify-content:center;font-size:34px;gap:10px}
+#stockmindLogin .sm-text-logo .sub{font-size:14px}
+.toolbar-status{margin-left:auto}.top{margin-top:6px}
+@media(max-width:600px){.sm-text-logo{font-size:21px;gap:6px}.sm-text-logo .sub{font-size:11px}.sidebar .sm-text-logo .sub{font-size:10px}}
+</style>
+</head>
+<body>
+<style id="stockmind-3d-theme">
+:root{
+  --sm-bg:#030712; --sm-panel:rgba(15,23,42,.72); --sm-panel2:rgba(17,24,39,.88);
+  --sm-border:rgba(148,163,184,.18); --sm-text:#e5eefc; --sm-muted:#8fa3bd;
+  --sm-accent:#38bdf8; --sm-accent2:#8b5cf6; --sm-good:#34d399; --sm-warn:#fbbf24; --sm-danger:#fb7185;
+}
+html,body{min-height:100%;background:
+ radial-gradient(circle at 10% 10%,rgba(56,189,248,.10),transparent 28%),
+ radial-gradient(circle at 90% 15%,rgba(139,92,246,.12),transparent 30%),
+ radial-gradient(circle at 50% 100%,rgba(34,211,238,.06),transparent 35%),
+ #030712!important;color:var(--sm-text)!important}
+body{perspective:1400px;overflow-x:hidden}
+body:before,body:after{content:"";position:fixed;z-index:-1;pointer-events:none;border-radius:50%;filter:blur(1px);opacity:.35}
+body:before{width:420px;height:420px;right:-120px;top:120px;background:radial-gradient(circle,rgba(56,189,248,.18),transparent 68%);transform:translateZ(-120px)}
+body:after{width:520px;height:520px;left:-180px;bottom:-160px;background:radial-gradient(circle,rgba(139,92,246,.16),transparent 68%);transform:translateZ(-160px)}
+header,.header,.topbar,.sidebar,.nav,.card,.panel,.stat,.widget,.table-container,.modal,.dropdown,.section-title{
+  backdrop-filter:blur(18px) saturate(135%);
+  -webkit-backdrop-filter:blur(18px) saturate(135%);
+}
+.card,.panel,.stat,.widget,.table-container,.modal{
+  background:linear-gradient(145deg,rgba(30,41,59,.78),rgba(7,12,24,.82))!important;
+  border:1px solid var(--sm-border)!important;
+  border-radius:18px!important;
+  box-shadow:0 18px 40px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.055),inset 0 -1px 0 rgba(0,0,0,.25)!important;
+  transform:translateZ(0);
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.card:hover,.panel:hover,.stat:hover,.widget:hover{
+  transform:translateY(-3px) rotateX(.35deg);
+  box-shadow:0 24px 55px rgba(0,0,0,.36),0 0 28px rgba(56,189,248,.055),inset 0 1px 0 rgba(255,255,255,.07)!important;
+  border-color:rgba(56,189,248,.22)!important;
+}
+button,.btn,[role="button"]{
+  border-radius:11px!important;
+  border:1px solid rgba(148,163,184,.18)!important;
+  background:linear-gradient(145deg,rgba(51,65,85,.9),rgba(15,23,42,.95))!important;
+  color:#e5eefc!important;
+  box-shadow:0 7px 0 rgba(2,6,23,.75),0 12px 24px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.08)!important;
+  transition:transform .12s ease,box-shadow .12s ease,filter .12s ease!important;
+}
+button:hover,.btn:hover,[role="button"]:hover{filter:brightness(1.14);transform:translateY(-2px)!important}
+button:active,.btn:active,[role="button"]:active{transform:translateY(4px)!important;box-shadow:0 3px 0 rgba(2,6,23,.8),0 6px 14px rgba(0,0,0,.2)!important}
+input,select,textarea{
+  background:rgba(2,6,23,.72)!important;color:#e5eefc!important;
+  border:1px solid rgba(148,163,184,.20)!important;border-radius:11px!important;
+  box-shadow:inset 0 3px 12px rgba(0,0,0,.25),0 1px 0 rgba(255,255,255,.04)!important;
+}
+table{border-collapse:separate!important;border-spacing:0 7px!important}
+tr{background:rgba(15,23,42,.50)}
+td,th{border:0!important}
+tr td:first-child,tr th:first-child{border-radius:10px 0 0 10px}
+tr td:last-child,tr th:last-child{border-radius:0 10px 10px 0}
+h1,h2,h3{letter-spacing:-.02em;text-shadow:0 2px 18px rgba(56,189,248,.08)}
+.tag,.badge,.pill{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 5px 14px rgba(0,0,0,.18);
+}
+</style>
+
+<style id="stockmind-neon-section-style">
+.nav small{color:#d9ff4a;font-weight:900;text-shadow:0 0 7px rgba(217,255,74,.85),0 0 18px rgba(217,255,74,.45);letter-spacing:.14em}
+.nav small:first-child{padding-top:8px}
+</style>
+<style id="stockmind-auth-style">
+body.stockmind-locked{overflow:hidden}
+#stockmindLogin{
+ position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;
+ background:
+ radial-gradient(circle at 20% 20%,rgba(56,189,248,.18),transparent 32%),
+ radial-gradient(circle at 80% 80%,rgba(139,92,246,.20),transparent 35%),
+ linear-gradient(135deg,#020617,#070b18 45%,#030712);
+ color:#e5eefc;font-family:inherit;
+}
+#stockmindLogin:before{
+ content:"";position:absolute;inset:0;pointer-events:none;
+ background-image:linear-gradient(rgba(148,163,184,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.035) 1px,transparent 1px);
+ background-size:42px 42px;transform:perspective(500px) rotateX(58deg) scale(1.8);transform-origin:center bottom;opacity:.45;
+}
+#stockmindLogin .login-shell{
+ position:relative;width:min(440px,90vw);padding:38px;
+ border:1px solid rgba(125,211,252,.22);border-radius:26px;
+ background:linear-gradient(145deg,rgba(30,41,59,.82),rgba(3,7,18,.90));
+ box-shadow:0 45px 100px rgba(0,0,0,.62),0 0 70px rgba(56,189,248,.08),inset 0 1px 0 rgba(255,255,255,.10);
+ transform:perspective(1000px) rotateX(2deg) translateY(-32px);backdrop-filter:blur(22px) saturate(145%);
+}
+#stockmindLogin .login-shell:after{
+ content:"";position:absolute;inset:10px;border-radius:19px;pointer-events:none;border:1px solid rgba(255,255,255,.035);
+}
+#stockmindLogin .brand{font-size:30px;font-weight:850;letter-spacing:-.03em;margin-bottom:6px}
+#stockmindLogin .brand span{color:#38bdf8}
+#stockmindLogin .subtitle{color:#94a3b8;margin-bottom:28px;font-size:14px}
+#stockmindLogin label{display:block;margin:15px 0 7px;font-size:13px;color:#cbd5e1}
+#stockmindLogin input{
+ display:block;width:100%;box-sizing:border-box;padding:14px 15px;
+ border:1px solid rgba(148,163,184,.20);border-radius:12px;background:rgba(2,6,23,.72);
+ color:#fff;outline:none;box-shadow:inset 0 4px 14px rgba(0,0,0,.30),0 1px 0 rgba(255,255,255,.04);
+}
+#stockmindLogin input:focus{border-color:rgba(56,189,248,.65);box-shadow:0 0 0 3px rgba(56,189,248,.09),inset 0 4px 14px rgba(0,0,0,.3)}
+#stockmindLogin button{
+ width:100%;margin-top:22px;padding:14px;border:0;border-radius:12px;
+ background:linear-gradient(135deg,#0ea5e9,#7c3aed)!important;color:white!important;font-weight:800;
+ box-shadow:0 8px 0 #172554,0 18px 35px rgba(14,165,233,.22),inset 0 1px 0 rgba(255,255,255,.2)!important;
+}
+#stockmindLogin .error{min-height:20px;margin-top:12px;color:#fb7185;font-size:13px;text-align:center}
+#stockmindLogin .hint{margin-top:12px;color:#64748b;font-size:11px;text-align:center}
+#stockmindLogin .security{margin-top:22px;color:#64748b;font-size:10px;text-align:center}
+#stockmindLogin .login-logo{width:100%;max-width:390px;height:auto;display:block;margin:0 auto 20px;filter:drop-shadow(0 18px 26px rgba(56,189,248,.16))}
+#stockmindLogin .brand-name{display:none}
+
+/* Astronacci-style deep dive board */
+.astro-board{display:grid;grid-template-columns:1.05fr 1.35fr 1.15fr;gap:10px;margin-top:12px}
+.astro-panel{background:linear-gradient(180deg,rgba(4,18,34,.96),rgba(2,8,18,.96));border:1px solid rgba(125,211,252,.35);border-radius:3px;padding:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 12px 28px rgba(0,0,0,.24)}
+.astro-panel h3{margin:0 0 8px;font-size:14px;letter-spacing:.01em;color:#f8fafc}
+.astro-panel .panel-sub{font-size:10px;color:#a7bad0;text-align:center;margin-top:-4px;margin-bottom:7px}
+.astro-table{width:100%;border-collapse:collapse;font-size:11px}
+.astro-table th,.astro-table td{padding:6px 5px;border-bottom:1px solid rgba(148,163,184,.14);vertical-align:top}
+.astro-table th{color:#b7c7da;font-weight:700;background:rgba(15,23,42,.55)}
+.astro-table td:first-child{font-weight:800}
+.astro-good{color:#4ade80}.astro-warn{color:#facc15}.astro-bad{color:#fb7185}
+.astro-callout{padding:9px;border-radius:8px;margin-top:8px;font-size:11px;line-height:1.45;background:rgba(15,23,42,.8);border:1px solid rgba(250,204,21,.35)}
+.astro-wheel{height:235px;display:grid;place-items:center;position:relative}
+.astro-wheel svg{width:230px;height:230px;overflow:visible}
+.astro-price-card{grid-column:2 / span 1;min-height:292px}
+.astro-window{padding:9px;border-radius:8px;border:1px solid rgba(148,163,184,.15);margin-top:7px}
+.astro-window.red{background:rgba(127,29,29,.26);border-color:rgba(248,113,113,.55)}
+.astro-window.gold{background:rgba(120,53,15,.23);border-color:rgba(250,204,21,.55)}
+.astro-window.green{background:rgba(20,83,45,.23);border-color:rgba(74,222,128,.55)}
+.astro-roadmap td,.astro-roadmap th{text-align:center}
+.astro-score{font-size:28px;font-weight:900;line-height:1}
+.astro-footer{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.astro-provider-bar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:9px 11px;border-radius:9px;background:linear-gradient(90deg,rgba(14,165,233,.12),rgba(139,92,246,.12));border:1px solid rgba(125,211,252,.18);font-size:11px}
+.astro-mini{font-size:10px;color:#95a7be}
+.astro-chart-wrap{height:220px;margin-top:5px}
+.astro-chart-wrap svg{width:100%;height:100%}
+.astro-search-grid{display:grid;grid-template-columns:1.1fr 1fr 1fr auto;gap:8px;align-items:end}
+.astro-search-grid label{font-size:11px;color:#9fb0c4;display:block;margin-bottom:4px}
+.astro-search-grid input{width:100%;background:#08111d;border:1px solid #26364b;color:#fff;padding:9px 10px;border-radius:8px}
+@media(max-width:1150px){.astro-board{grid-template-columns:1fr 1fr}.astro-price-card{grid-column:auto}.astro-footer{grid-column:1/-1}}
+@media(max-width:720px){.astro-board{grid-template-columns:1fr}.astro-footer{grid-template-columns:1fr}.astro-search-grid{grid-template-columns:1fr}}
+</style>
+
+<div id="stockmindLogin" role="dialog" aria-modal="true">
+ <div class="login-shell">
+  <div class="sm-text-logo" style="font-size:32px;text-align:center;margin-bottom:18px"><span class="stock">Stock</span><span class="mind">Mind</span><span class="sub">Market Research</span></div>
+  <div class="subtitle">Secure access to the unified stock analysis platform.</div>
+  <form id="stockmindLoginForm" autocomplete="off">
+   <label for="stockmindUsername">Username</label>
+   <input id="stockmindUsername" type="text" autocomplete="username" placeholder="Enter username" required>
+   <label for="stockmindPassword">Password</label>
+   <input id="stockmindPassword" type="password" autocomplete="current-password" placeholder="Enter password" required>
+   <div id="stockmindLoginError" class="error"></div>
+   <div class="hint">Username: ARTEK10 · Password: Qwerty@321</div>
+   <button type="submit">LOGIN TO STOCKMIND</button>
+  </form>
+  <div class="security">Authorized access · 3D Secure Interface</div>
+ </div>
+</div>
+
+<div class="app">
+<aside class="sidebar">
+  <div class="sm-text-logo" style="margin:0 8px 24px"><span class="stock">Stock</span><span class="mind">Mind</span><span class="sub">Market Research</span></div>
+  <div class="nav">
+    <small>Dashboard</small>
+    <button class="active" onclick="show('dashboard',this)">◈ Dashboard</button>
+    <small>AI Tools</small>
+    <button onclick="show('news_ai',this)">📰 AI Breaking News</button>
+    <button onclick="show('bandar',this)">🕵️ AI Bandar Detector</button>
+    <button onclick="show('screener_preset',this)">🎯 Screener Preset</button>
+    <button onclick="show('astro',this)">🌌 Astro Market Method</button>
+    <button onclick="show('sentiment',this)">✦ Sentiment AI</button>
+    <button onclick="show('ai_analysis',this)">🧠 AI Analysis</button>
+    <small>Workspace</small>
+    <button onclick="show('stocks',this)">⌁ Market Scanner</button>
+    <button onclick="show('strategy',this)">◇ Strategy Builder</button>
+    <button onclick="show('backtest',this)">◫ Backtesting</button>
+    <button onclick="show('models',this)">◎ ML / Deep Learning</button>
+    <button onclick="show('portfolio',this)">◉ Portfolio & Risk</button>
+    <button onclick="show('paper',this)">◌ Paper Trading</button>
+    <button onclick="show('live',this)">⚡ Live Trading</button>
+    <small>System</small>
+    <button onclick="show('providers',this)">⚙ Data Providers</button>
+    <button onclick="show('data_models',this)">▣ Data &amp; Models</button>
+    <button onclick="show('ops',this)">◈ Operations</button>
+  </div>
+</aside>
+<main class="main">
+  <div class="top">
+    <div class="search"><input id="ticker" value="BBCA" placeholder="Cari ticker, mis. BBCA, BBRI, TLKM"><button onclick="loadTicker()">Analisa</button></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input id="apiBase" class="pill" value="http://localhost:8000" style="width:210px;background:var(--panel);color:#fff;border:1px solid var(--line)">
+      <input id="jwt" class="pill" placeholder="JWT token" style="width:170px;background:var(--panel);color:#fff;border:1px solid var(--line)">
+      <button class="primary" onclick="connectAPI()">Connect</button>
+      <div class="pill" id="connStatus">● Demo / Offline</div>
+    </div>
+  </div>
+
+  <section id="dashboard" class="page">
+    <div class="hero">
+      <div class="card">
+        <div class="ticker"><div><div class="muted">Indonesia • IDX</div><h1 id="name">Bank Central Asia</h1></div><span class="tag" id="symbol">BBCA</span></div>
+        <div style="display:flex;align-items:end;gap:12px;margin-top:16px"><div class="price" id="price">9,425</div><div class="up" id="change">+1.18% (+110)</div></div>
+        <div class="chart" id="chart"></div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h2>AI Market Signal</h2><span class="tag">ENSEMBLE</span></div>
+        <div class="score"><div class="ring"><b id="overall">76</b></div><div><div id="signalLabel" class="up" style="font-size:22px;font-weight:800">BULLISH</div><div class="muted">Confidence score</div><div style="margin-top:8px">Risk: <b>Medium</b></div></div></div>
+        <div style="margin-top:16px">
+          <div class="row"><span>Technical</span><b id="sigTechnical">81/100</b></div>
+          <div class="row"><span>ML probability</span><b id="sigML">72%</b></div>
+          <div class="row"><span>LSTM probability</span><b id="sigLSTM">68%</b></div>
+          <div class="row"><span>FinBERT sentiment</span><b id="sigFin">+0.64</b></div>
+          <div class="row"><span>Strategy</span><b id="sigStrategy">83/100</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="grid4">
+      <div class="card metric"><div class="label">RSI (14)</div><div class="value">56.8</div><div class="bar"><div class="fill" style="width:57%"></div></div></div>
+      <div class="card metric"><div class="label">MACD</div><div class="value up">+18.4</div><div class="muted">Bullish crossover</div></div>
+      <div class="card metric"><div class="label">MA20 / MA50</div><div class="value up">↑ 1.7%</div><div class="muted">Trend positive</div></div>
+      <div class="card metric"><div class="label">Volume vs avg</div><div class="value">1.34×</div><div class="muted">Above average</div></div>
+    </div>
+    <div class="dashboard">
+      <div class="card">
+        <div class="section-title"><h2>News & Social Sentiment</h2><span class="tag">NLP</span></div>
+        <div class="row"><span>Financial news</span><b class="up">+0.71</b></div>
+        <div class="row"><span>Company news</span><b class="up">+0.58</b></div>
+        <div class="row"><span>Social momentum</span><b class="up">+0.43</b></div>
+        <div class="row"><span>Sentiment velocity</span><b>+12.4%</b></div>
+        <div class="notice">Demo mode: sentiment di sini menggunakan data simulasi. Hubungkan provider berita/social pada backend untuk real-time.</div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h2>Model Ensemble</h2><span class="tag">10Y TRAINING</span></div>
+        <div class="row"><span>XGBoost</span><b>74%</b></div><div class="row"><span>Random Forest</span><b>69%</b></div><div class="row"><span>LSTM</span><b>76%</b></div><div class="row"><span>Transformer</span><b>71%</b></div>
+        <div style="margin-top:13px" class="muted">Target: probabilitas return positif pada horizon 5 hari.</div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h2>Quick Backtest</h2><button class="primary" onclick="runBacktest()">Run</button></div>
+        <div class="backtest">
+          <div class="btbox"><div class="muted">Win rate</div><b id="btWin">64.5%</b></div>
+          <div class="btbox"><div class="muted">CAGR</div><b id="btCagr">18.2%</b></div>
+          <div class="btbox"><div class="muted">Max DD</div><b id="btDd">-14.7%</b></div>
+          <div class="btbox"><div class="muted">Sharpe</div><b id="btSharpe">1.31</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="strategy" class="page hidden">
+    <div class="card">
+      <div class="section-title"><div><h2>Visual Strategy Builder</h2><div class="muted">Bangun aturan tanpa menulis kode.</div></div><button class="primary" onclick="runStrategy()">Test Strategy</button></div>
+      <div id="rules"></div><button class="add" style="width:100%;margin-top:10px" onclick="addRule()">＋ Tambah kondisi</button>
+      <div id="strategyResult" class="notice hidden"></div>
+    </div>
+  </section>
+
+  <section id="backtest" class="page hidden">
+    <div class="card">
+      <div class="section-title"><div><h2>Historical Backtesting</h2><div class="muted">Simulasi strategi terhadap data historis.</div></div><button class="primary" onclick="runBacktest(true)">Run 10Y Backtest</button></div>
+      <div class="backtest">
+        <div class="btbox"><div class="muted">Initial capital</div><b>Rp100 jt</b></div><div class="btbox"><div class="muted">Trades</div><b id="trades">183</b></div><div class="btbox"><div class="muted">Profit factor</div><b>1.84</b></div><div class="btbox"><div class="muted">Equity</div><b id="equity">Rp478 jt</b></div>
+      </div>
+      <div class="chart" id="equityChart"></div>
+    </div>
+  </section>
+
+  <section id="stocks" class="page hidden">
+    <div class="card"><div class="section-title"><h2>Market Scanner</h2><span class="tag">DEMO UNIVERSE</span></div>
+    <table class="table"><thead><tr><th>Ticker</th><th>Price</th><th>Change</th><th>RSI</th><th>ML Bullish</th><th>Signal</th></tr></thead><tbody id="scanner"></tbody></table></div>
+  </section>
+
+  <section id="models" class="page hidden">
+    <div class="card"><div class="section-title"><h2>ML / Deep Learning Lab</h2><button class="primary" onclick="trainModel()">Train model</button></div>
+    <div class="grid4"><div class="card metric"><div class="label">Training samples</div><div class="value">12,480</div></div><div class="card metric"><div class="label">Validation AUC</div><div class="value">0.71</div></div><div class="card metric"><div class="label">F1 score</div><div class="value">0.68</div></div><div class="card metric"><div class="label">Last training</div><div class="value">Today</div></div></div>
+    <div id="trainLog" class="notice">Model registry siap. Tekan “Train model” untuk menjalankan simulasi training.</div></div>
+  </section>
+
+  <section id="sentiment" class="page hidden">
+    <div class="card"><div class="section-title"><h2>Sentiment AI</h2><span class="tag">NLP PIPELINE</span></div>
+    <table class="table"><thead><tr><th>Source</th><th>Headline / Topic</th><th>Sentiment</th><th>Impact</th></tr></thead>
+    <tbody><tr><td>News</td><td>Outlook sektor perbankan tetap positif</td><td class="up">Positive</td><td>High</td></tr><tr><td>News</td><td>Investor mencermati suku bunga</td><td>Neutral</td><td>Medium</td></tr><tr><td>Social</td><td>Momentum BBCA ramai dibahas</td><td class="up">Positive</td><td>Medium</td></tr></tbody></table>
+    <div class="notice">Untuk produksi, ganti data simulasi dengan API berita/social dan lakukan deduplikasi, timestamp normalization, serta rate-limit handling.</div></div>
+  </section>
+
+
+  <section id="portfolio" class="page hidden">
+    <div class="card"><div class="section-title"><h2>Portfolio & Risk Management</h2><span class="tag">RISK ENGINE</span></div>
+      <div class="grid4">
+        <div class="card metric"><div class="label">Mode</div><div class="value" id="pfMode">Paper</div></div>
+        <div class="card metric"><div class="label">Max Order</div><div class="value">Rp5 jt</div></div>
+        <div class="card metric"><div class="label">Max Position</div><div class="value">10%</div></div>
+        <div class="card metric"><div class="label">Daily Loss Kill</div><div class="value">2%</div></div>
+      </div>
+      <div class="notice">Portfolio accounting includes commission, slippage, position sizing, stop-loss/take-profit, exposure limits, stale-quote protection and circuit breakers.</div>
+    </div>
+  </section>
+
+  <section id="paper" class="page hidden">
+    <div class="card"><div class="section-title"><h2>Paper Trading</h2><button class="primary" onclick="startPaperUI()">Start Test Gate</button></div>
+      <p>Paper trading is the required bridge between out-of-sample validation and live execution.</p>
+      <div id="paperOut" class="notice">Recommended gate: minimum 60 trading sessions.</div>
+    </div>
+  </section>
+
+  <section id="live" class="page hidden">
+    <div class="card"><div class="section-title"><h2>Live Trading</h2><span class="tag">PROTECTED</span></div>
+      <div class="notice">Live mode is OFF by default. Broker certification, OOS validation, paper trading, risk limits and manual approval must pass first.</div>
+      <div class="grid4">
+        <div><div class="muted">Mode</div><select id="tradeMode"><option>paper</option><option>live</option></select></div>
+        <div><div class="muted">Max Order Value</div><input id="maxOrder" value="5000000"></div>
+        <div><div class="muted">Max Position %</div><input id="maxPos" value="0.10"></div>
+        <div><div class="muted">Daily Loss %</div><input id="maxLoss" value="0.02"></div>
+      </div><br>
+      <label><input id="manualApproval" type="checkbox" checked> Manual approval required</label>
+      <label style="margin-left:18px"><input id="liveEnabled" type="checkbox"> Enable</label>
+      <br><br><button class="primary" onclick="saveTradingUI()">Save risk gate</button>
+      <pre id="liveOut" class="notice"></pre>
+    </div>
+  </section>
+
+  <section id="providers" class="page hidden">
+    <div class="card"><div class="section-title"><h2>Data Providers</h2><span class="tag">LICENSE / CONNECTOR</span></div>
+      <p class="muted">Satu registry untuk provider OHLCV IDX, security master, corporate actions, kalender IDX, berita berlisensi dan broker.</p>
+      <button class="primary" onclick="loadProviders()">Refresh Providers</button>
+      <div id="providersOut" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  
+
+
+<section id="news_ai" class="page hidden">
+  <div class="feature-grid">
+    <div class="card feature-card">
+      <div class="feature-head"><span class="icon3d">📰</span><div><h2>AI Breaking News</h2><div class="muted">Berita IDX yang sedang bergerak cepat dan relevan.</div></div><span class="live-dot"></span></div>
+      <div class="search-row"><input id="newsSymbol" value="BBCA" placeholder="Cari saham, mis. BBCA"><button class="primary" onclick="searchBreakingNews()">Search</button></div>
+      <div class="muted" style="margin-top:10px">Pencarian memprioritaskan berita terbaru lalu meranking hype, relevansi emiten, dan sentimen.</div>
+    </div>
+    <div class="card feature-card">
+      <div class="feature-head"><span class="icon3d">🔥</span><div><h2>5 Hype Picks / Hari</h2><div class="muted">Daftar yang paling menarik untuk dianalisa.</div></div></div>
+      <button class="primary" onclick="loadHypeNews()">Refresh 5 Hype</button>
+      <div id="hypeSummary" class="notice">Menunggu feed berita…</div>
+    </div>
+    <div class="card feature-card">
+      <div class="feature-head"><span class="icon3d">🤖</span><div><h2>Auto Post AI</h2><div class="muted">Post satu halaman lengkap dengan sumber.</div></div></div>
+      <button class="primary" onclick="generateNewsPosts()">Generate 5 Posts</button>
+      <div id="postStatus" class="notice">Post dibuat dari berita yang sudah di-ranking; tidak ada auto-execution transaksi.</div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div class="section-title"><div><h2>Breaking News Feed</h2><div class="muted">Tanggal, waktu, sumber dan score ditampilkan pada tiap item.</div></div><span id="newsFeedStatus" class="tag">LIVE / PROVIDER</span></div>
+    <div class="news-layout">
+      <div id="newsList" class="news-list"><div class="notice">Klik Search untuk memuat berita.</div></div>
+      <div>
+        <div class="data-status" id="selectedNewsMeta">Pilih berita untuk preview analisa</div>
+        <div class="card post-box" id="selectedNewsPost" style="margin-top:10px">Belum ada berita terpilih.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="bandar" class="page hidden">
+  <div class="card">
+    <div class="feature-head"><span class="icon3d">🕵️</span><div><h2>AI Bandar Detector</h2><div class="muted">Satu halaman untuk Broker Summary, Distribution, Flow, Trade Flow dan Fundachart.</div></div></div>
+    <div class="search-row"><input id="bandarSymbol" value="BBCA" placeholder="Ticker IDX"><button class="primary" onclick="loadBandar()">Analisa Bandar</button><span id="bandarStatus" class="data-status">Demo until broker-flow provider connected</span></div>
+  </div>
+  <div class="broker-grid" style="margin-top:14px">
+    <div class="card">
+      <div class="section-title"><h2>Broker Summary</h2><span class="tag">BUY vs SELL</span></div>
+      <table class="table"><thead><tr><th>Broker</th><th>Buy</th><th>Sell</th><th>Net</th></tr></thead><tbody id="brokerSummary"></tbody></table>
+    </div>
+    <div class="card">
+      <div class="section-title"><h2>Broker Distribution</h2><span class="tag">ACC / DIST</span></div>
+      <div class="grid4" style="grid-template-columns:1fr 1fr">
+        <div class="btbox"><div class="muted">Accumulation</div><b id="accumulation">—</b></div>
+        <div class="btbox"><div class="muted">Distribution</div><b id="distribution">—</b></div>
+      </div>
+      <div class="chart" id="brokerChart"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div class="section-title"><h2>Broker Flow & Trade Flow</h2><span class="tag">FLOW MAP</span></div>
+    <div class="flow-box">
+      <div class="flow-chip">Broker Flow<b id="brokerFlow">—</b></div>
+      <div class="flow-chip">Foreign<b id="foreignFlow">—</b></div>
+      <div class="flow-chip">Retail<b id="retailFlow">—</b></div>
+      <div class="flow-chip">Institution<b id="instFlow">—</b></div>
+      <div class="flow-chip">AI Bandar Score<b id="bandarScore">—</b></div>
+      <div class="flow-chip">As of<b id="bandarAsOf">—</b></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div class="section-title"><h2>Fundachart</h2><span class="tag">FUNDAMENTAL CONTEXT</span></div>
+    <div class="grid4">
+      <div class="card metric"><div class="label">EPS Growth</div><div class="big" id="epsGrowth">—</div></div>
+      <div class="card metric"><div class="label">ROE</div><div class="big" id="roe">—</div></div>
+      <div class="card metric"><div class="label">Revenue Growth</div><div class="big" id="revGrowth">—</div></div>
+      <div class="card metric"><div class="label">AI Interpretation</div><div class="big" id="bandarInterpret">—</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="screener_preset" class="page hidden">
+  <div class="card">
+    <div class="feature-head"><span class="icon3d">🎯</span><div><h2>Screener Preset</h2><div class="muted">Preset siap pakai untuk Bandarmology, Teknikal dan Fundamental.</div></div></div>
+    <div class="preset-tabs">
+      <button class="active" onclick="selectPreset('Bandarmology',this)">🕵️ Bandarmology</button>
+      <button onclick="selectPreset('Teknikal',this)">📈 Teknikal</button>
+      <button onclick="selectPreset('Fundamental',this)">💎 Fundamental</button>
+    </div>
+    <div id="presetRules" class="rule-chips"></div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div class="section-title"><div><h2>Universe Screener</h2><div class="muted">Masukkan ticker dan gunakan preset sebagai starting point.</div></div><button class="primary" onclick="runPresetScreen()">Run Preset</button></div>
+    <div class="search-row"><input id="screenSymbol" value="BBCA" placeholder="Ticker IDX"><select id="screenPreset"><option>Bandarmology</option><option>Teknikal</option><option>Fundamental</option></select></div>
+    <div id="screenResult" class="notice">Belum dijalankan.</div>
+  </div>
+</section>
+
+<section id="astro" class="page hidden">
+  <div class="card">
+    <div class="section-title"><div class="feature-head" style="margin:0"><span class="icon3d">🌌</span><div><h2>Astro Market Deep Dive</h2><div class="muted">Financial Astrology + Fibonacci Time Cycle Analysis · layout inspired by your BUVA example</div></div></div><span id="astroSignal" class="tag">WAITING</span></div>
+    <div class="astro-search-grid">
+      <div><label for="astroSymbol">Ticker IDX</label><input id="astroSymbol" value="BUVA" placeholder="BBCA / BBRI / BUVA"></div>
+      <div><label for="astroDate">Tanggal analisa</label><input id="astroDate" type="date"></div>
+      <div><label for="astroTime">Waktu IPO (opsional)</label><input id="astroTime" type="time" value="09:00"></div>
+      <button class="primary" onclick="runAstroDeepDive()">🔎 Search & Analisa</button>
+    </div>
+    <div class="astro-provider-bar" style="margin-top:10px"><span id="astroProviderStatus">Provider: belum terhubung · demo aktif</span><span class="astro-mini">Tanggal & data market selalu ditampilkan per search</span></div>
+  </div>
+
+  <div class="astro-board">
+    <div class="astro-panel">
+      <h3>1. NATAL CHART <span class="astro-mini" id="astroNatalMeta"></span></h3>
+      <div class="astro-wheel" id="astroWheel"></div>
+      <table class="astro-table"><thead><tr><th>Planet</th><th>Sign</th><th>Degree</th></tr></thead><tbody id="astroNatalTable"></tbody></table>
+      <div class="astro-callout"><b>Karakter saham:</b> <span id="astroCharacter">Momentum, struktur, dan peluang ekspansi perlu dibaca bersama trend harga.</span></div>
+    </div>
+
+    <div class="astro-panel">
+      <h3>2. PLANETARY TRANSIT <span class="astro-mini">Current highlight</span></h3>
+      <table class="astro-table"><thead><tr><th>Planet</th><th>Posisi</th><th>Aspek ke Natal</th><th>Interpretasi</th></tr></thead><tbody id="astroTransitTable"></tbody></table>
+      <div class="astro-callout"><b>Kesimpulan transit:</b> <span id="astroTransitConclusion">Gunakan transit sebagai konteks waktu, lalu validasi dengan price action dan fundamental.</span></div>
+    </div>
+
+    <div class="astro-panel">
+      <h3>3. FIBONACCI TIME CYCLE</h3>
+      <div class="panel-sub">Dari Low & High pivot terbaru</div>
+      <table class="astro-table"><thead><tr><th>Interval</th><th>From Low</th><th>From High</th></tr></thead><tbody id="astroTimeTable"></tbody></table>
+      <div class="astro-callout"><b>Time cluster:</b> <span id="astroTimeCluster">—</span></div>
+    </div>
+
+    <div class="astro-panel">
+      <h3>4. FIBONACCI PRICE LEVEL</h3>
+      <table class="astro-table"><thead><tr><th>Level</th><th>Rasio</th><th>Harga</th><th>Keterangan</th></tr></thead><tbody id="astroFibTable"></tbody></table>
+      <div class="astro-callout"><b>Harga saat ini:</b> <span id="astroCurrentPrice">—</span> · gunakan level sebagai area, bukan angka pasti.</div>
+    </div>
+
+    <div class="astro-panel astro-price-card">
+      <h3>5. PRICE CHART DAILY</h3>
+      <div class="panel-sub" id="astroPriceMeta">—</div>
+      <div class="astro-chart-wrap" id="astroPriceChart"></div>
+      <div class="timeline" style="margin-top:8px"><div class="node">LOW<br><b id="astroLowDate">—</b></div><div class="node">CURRENT<br><b id="astroCurrentDate">—</b></div><div class="node">HIGH<br><b id="astroHighDate">—</b></div><div class="node">TIME<br><b id="astroClusterShort">—</b></div><div class="node">SIGNAL<br><b id="astroSignalMini">—</b></div></div>
+    </div>
+
+    <div class="astro-panel">
+      <h3>6. MAJOR TIME WINDOWS</h3>
+      <div id="astroWindows"></div>
+    </div>
+
+    <div class="astro-panel">
+      <h3>7. PLANETARY CYCLE CALENDAR</h3>
+      <table class="astro-table"><thead><tr><th>Planet</th><th>Current Sign</th><th>Retro</th><th>Cycle Note</th></tr></thead><tbody id="astroCycleTable"></tbody></table>
+      <div class="astro-callout"><b>Catatan:</b> kalender ini menampilkan snapshot transit yang tersedia dari provider; cakupan jangka panjang bergantung pada paket ephemeris.</div>
+    </div>
+
+    <div class="astro-panel">
+      <h3>8. PRICE SCENARIO ROADMAP</h3>
+      <table class="astro-table astro-roadmap"><thead><tr><th>Scenario</th><th>Kondisi</th><th>Target</th><th>Prob.</th></tr></thead><tbody id="astroScenarioTable"></tbody></table>
+      <div class="astro-callout"><b>Interpretasi:</b> <span id="astroInterpretation">Base case menjadi skenario kerja sampai ada konfirmasi breakout atau breakdown.</span></div>
+    </div>
+
+    <div class="astro-panel">
+      <h3>9. STRATEGI ALA ASTRO-MARKET</h3>
+      <div id="astroStrategy"></div>
+      <div class="astro-callout"><b>5-stage score:</b> <span id="astroStageScores">—</span></div>
+      <div class="astro-callout" style="border-color:rgba(248,113,113,.35);color:#cbd5e1"><b>Disclaimer:</b> <span id="astroDisclaimer">—</span></div>
+    </div>
+
+    <div class="astro-footer">
+      <div class="astro-panel"><h3>5 TAHAP ANALISA</h3><table class="astro-table"><thead><tr><th>Tahap</th><th>Score</th><th>Makna</th></tr></thead><tbody id="astroStagesTable"></tbody></table></div>
+      <div class="astro-panel"><h3>PROVIDER CONNECTION</h3><div class="astro-mini" style="line-height:1.6">Untuk production, isi <b>ASTRO_BASE_URL</b> dan <b>ASTRO_API_KEY</b> pada backend. Provider adapter saat ini mengikuti endpoint positions yang kompatibel dengan Morphemeris. Untuk self-hosted Swiss Ephemeris, gunakan lisensi yang sesuai.</div><div class="astro-callout"><b>Status:</b> <span id="astroConnectionGuide">Demo aktif. Saat provider terhubung, Natal Chart dan Transit akan memakai posisi ephemeris aktual.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="ai_analysis" class="page hidden">
+  <div class="card">
+    <div class="section-title"><h2>🧠 AI Analysis</h2><button class="primary" onclick="refreshAIAnalysis()">Refresh</button></div>
+    <p class="muted">Pusat analisa terpadu StockMind: AI Market Signal + ML + Deep Learning + FinBERT + ensemble scoring.</p>
+    <div class="grid4">
+      <div class="stat"><div class="muted">ML Probability</div><div class="big" id="aiML">—</div></div>
+      <div class="stat"><div class="muted">LSTM Probability</div><div class="big" id="aiLSTM">—</div></div>
+      <div class="stat"><div class="muted">FinBERT Sentiment</div><div class="big" id="aiFinBERT">—</div></div>
+      <div class="stat"><div class="muted">Ensemble</div><div class="big" id="aiEnsemble">—</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-title"><h2>AI Market Signal</h2><span id="aiSignalTag" class="tag">WAITING</span></div>
+    <div class="grid4">
+      <div class="stat"><div class="muted">Signal</div><div class="big" id="aiSignal">—</div></div>
+      <div class="stat"><div class="muted">Confidence</div><div class="big" id="aiConfidence">—</div></div>
+      <div class="stat"><div class="muted">Technical</div><div class="big" id="aiTechnical">—</div></div>
+      <div class="stat"><div class="muted">Strategy</div><div class="big" id="aiStrategy">—</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Model Contributions</h2>
+    <table><thead><tr><th>Component</th><th>Model</th><th>Contribution</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Price Direction</td><td>Tree ML</td><td>45%</td><td class=positive>READY</td></tr>
+      <tr><td>Sequence Pattern</td><td>PyTorch LSTM</td><td>35%</td><td class=positive>READY</td></tr>
+      <tr><td>News Reaction</td><td>FinBERT</td><td>20%</td><td class=positive>READY</td></tr>
+      <tr><td>Final Decision</td><td>StockMind Ensemble</td><td>Unified Score</td><td class=positive>READY</td></tr>
+    </tbody></table>
+  </div>
+  <div class="card">
+    <h2>Analysis Pipeline</h2>
+    <pre class="muted">OHLCV + Technical Features → Tree ML
+Price Sequence → PyTorch LSTM
+Licensed News → FinBERT
+ML + LSTM + FinBERT → Ensemble Score → BUY / HOLD / SELL + Confidence
+             ↓
+      Strategy / Risk / Portfolio</pre>
+  </div>
+</section>
+
+<section id="data_models" class="page hidden">
+  <div class="card">
+    <div class="section-title"><h2>▣ Data &amp; Models</h2><button class="primary" onclick="refreshDataModels()">Refresh</button></div>
+    <p class="muted">Pusat data layer dan model registry StockMind: provider → PostgreSQL → feature store → ML/DL → FinBERT → ensemble.</p>
+    <div class="grid4">
+      <div class="stat"><div class="muted">Market Bars</div><div class="big" id="dmBars">—</div></div>
+      <div class="stat"><div class="muted">News Items</div><div class="big" id="dmNews">—</div></div>
+      <div class="stat"><div class="muted">Feature Vectors</div><div class="big" id="dmFeatures">—</div></div>
+      <div class="stat"><div class="muted">Signals</div><div class="big" id="dmSignals">—</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-title"><h2>Data Source Registry</h2><span class="tag">POSTGRESQL</span></div>
+    <table><thead><tr><th>Source</th><th>Type</th><th>Provider</th><th>Status</th></tr></thead>
+    <tbody id="dmSources"><tr><td colspan=4 class=muted>Connect API to load</td></tr></tbody></table>
+  </div>
+  <div class="card">
+    <div class="section-title"><h2>Model Registry</h2><span class="tag">PRODUCTION ENSEMBLE</span></div>
+    <table><thead><tr><th>Model</th><th>Engine</th><th>Weight / Role</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Tree ML</td><td>Scikit-learn</td><td>45% ensemble</td><td class=positive>READY</td></tr>
+      <tr><td>LSTM</td><td>PyTorch</td><td>35% ensemble</td><td class=positive>READY</td></tr>
+      <tr><td>FinBERT</td><td>Transformers</td><td>20% sentiment component</td><td class=positive>READY</td></tr>
+      <tr><td>StockMind Ensemble</td><td>Production scoring engine</td><td>ML + LSTM + FinBERT</td><td class=positive>READY</td></tr>
+    </tbody></table>
+  </div>
+  <div class="card">
+    <h3>Unified Data Pipeline</h3>
+    <pre class="muted">Licensed IDX → Security Master → OHLCV → Corporate Actions → Adjusted Prices → PostgreSQL → Feature Store → ML / LSTM → Licensed News → FinBERT → Ensemble → Signal</pre>
+  </div>
+</section>
+
+<section id="ops" class="page hidden">
+    <div class="card"><div class="section-title"><h2>Production Operations</h2><span class="tag">CONTROL PLANE</span></div>
+      <button class="primary" onclick="certifyUI()">Broker Sandbox Certification</button>
+      <button class="primary" onclick="reconcileUI()">Reconcile Broker</button>
+      <button class="primary" onclick="breakerUI()">Circuit Breaker</button>
+      <button class="primary" onclick="flattenUI()">Emergency Flatten</button>
+      <pre id="opsOut" class="notice" style="margin-top:14px"></pre>
+    </div>
+    <div class="card"><h3>Production gates</h3><ul><li>Licensed IDX data + licensed news</li><li>Leakage-aware out-of-sample validation</li><li>Paper trading gate</li><li>Broker sandbox/certification</li><li>Idempotency and duplicate-order protection</li><li>Stale quote detection</li><li>PostgreSQL reconciliation and audit trail</li></ul></div>
+  </section>
+</main>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+let API=localStorage.getItem('stockmind_api')||'http://localhost:8000';
+let TOKEN=localStorage.getItem('stockmind_token')||'';
+$('#apiBase').value=API; $('#jwt').value=TOKEN;
+function show(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));$('#'+id).classList.remove('hidden');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');if(id==='backtest')drawEquity();if(id==='providers')loadProviders();if(id==='sentiment')loadSentiment();if(id==='stocks')loadRanking();if(id==='news_ai'){loadHypeNews();searchBreakingNews()}if(id==='bandar')loadBandar();if(id==='screener_preset')selectPreset('Bandarmology',document.querySelector('.preset-tabs button'));if(id==='astro'){if($('#astroDate'))$('#astroDate').value=new Date().toISOString().slice(0,10);setTimeout(()=>runAstroDeepDive(),80)}}
+async function api(path,opt={}){opt.headers={...(opt.headers||{}),...(TOKEN?{Authorization:'Bearer '+TOKEN}:{})};let r=await fetch(API+path,opt);let t=await r.text();if(!r.ok)throw Error(t||r.statusText);return t?JSON.parse(t):{}}
+async function connectAPI(){API=$('#apiBase').value.replace(/\/$/,'');TOKEN=$('#jwt').value.trim();localStorage.setItem('stockmind_api',API);localStorage.setItem('stockmind_token',TOKEN);try{let h=await api('/api/platform/health');$('#connStatus').textContent='● Connected · PostgreSQL';$('#connStatus').style.color='var(--green)';loadRanking();loadTicker()}catch(e){$('#connStatus').textContent='● Connection failed';$('#connStatus').style.color='var(--red)';}}
+function chart(elId, seed=9, upward=true){let pts=[],v=seed;for(let i=0;i<80;i++){v+=((Math.sin(i*.43)+Math.random()-.45)*.8)+(upward?.12:-.05);pts.push(v)}let min=Math.min(...pts),max=Math.max(...pts);let d=pts.map((v,i)=>`${i*(100/79)},${95-(v-min)/(max-min)*82}`).join(' ');$('#'+elId).innerHTML=`<svg viewBox="0 0 100 100" preserveAspectRatio="none"><polyline points="${d}" fill="none" stroke="#55d6ff" stroke-width="1.3"/><line x1="0" y1="95" x2="100" y2="95" stroke="#202a3a"/><line x1="0" y1="13" x2="100" y2="13" stroke="#202a3a"/></svg>`}
+chart('chart',10,true);
+function drawEquity(){chart('equityChart',10,true)}
+async function loadTicker(){let t=$('#ticker').value.toUpperCase();let names={BBCA:'Bank Central Asia',BBRI:'Bank Rakyat Indonesia',TLKM:'Telkom Indonesia',BMRI:'Bank Mandiri',ASII:'Astra International'};$('#symbol').textContent=t;$('#name').textContent=names[t]||t+' — Equity';let p={BBCA:'9,425',BBRI:'4,210',TLKM:'3,180',BMRI:'5,950',ASII:'5,100'}[t]||'—';$('#price').textContent=p;chart('chart',Math.random()*8+6,Math.random()>.25);
+try{let d=await api('/api/dashboard/'+t);$('#overall').textContent=Math.round((d.ensemble_score||.5)*100);$('#signalLabel').textContent=d.signal||'HOLD';$('#signalLabel').className=(d.signal==='BUY'?'up':d.signal==='SELL'?'down':'muted');$('#sigML').textContent=Math.round((d.components?.ml||.5)*100)+'%';$('#sigLSTM').textContent=Math.round((d.components?.lstm||.5)*100)+'%';$('#sigFin').textContent=(d.components?.finbert||0).toFixed(2);$('#sigStrategy').textContent=Math.round((d.ensemble_score||.5)*100)+'/100';}catch(e){}}
+function runBacktest(full=false){let vals={win:(62+Math.random()*6).toFixed(1),cagr:(16+Math.random()*5).toFixed(1),dd:(-12-Math.random()*5).toFixed(1),sh:(1.15+Math.random()*.35).toFixed(2)};$('#btWin').textContent=vals.win+'%';$('#btCagr').textContent=vals.cagr+'%';$('#btDd').textContent=vals.dd+'%';$('#btSharpe').textContent=vals.sh;if(full){$('#trades').textContent=Math.floor(160+Math.random()*70);$('#equity').textContent='Rp'+Math.floor(410+Math.random()*130)+' jt';drawEquity()}}
+const ruleOptions=['RSI (14)','MA20 > MA50','MACD > Signal','ML Bullish Probability','Sentiment Score','Volume / Avg'];
+function ruleHTML(i){return `<div class="rule"><select><option>IF</option><option>AND</option><option>OR</option></select><select>${ruleOptions.map(x=>`<option>${x}</option>`).join('')}</select><input value="${i===0?'35':'65'}"><button class="danger" onclick="this.parentElement.remove()">×</button></div>`}
+function addRule(){ $('#rules').insertAdjacentHTML('beforeend',ruleHTML(Date.now()%10));}
+$('#rules').innerHTML=ruleHTML(0)+ruleHTML(1)+ruleHTML(2);
+async function runStrategy(){let r=$('#strategyResult');r.classList.remove('hidden');r.innerHTML='<b>Strategy builder ready.</b> Rules can be persisted to the PostgreSQL strategy registry.';try{await api('/api/strategy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Visual Strategy',version:'1.0',rules:[{field:'rsi',op:'<',value:35}]})});}catch(e){}}
+async function trainModel(){let l=$('#trainLog');l.textContent='Queueing production training: feature engineering → tree ML → PyTorch LSTM → FinBERT → ensemble → model registry…';try{let r=await api('/jobs/ingest-train-ensemble/'+$('#ticker').value.toUpperCase(),{method:'POST'});l.textContent='Training queued. Job ID: '+r.job_id;}catch(e){l.textContent='Backend belum terhubung/authenticated: '+e.message;}}
+async function loadRanking(){try{let r=await api('/api/platform/ranking?limit=50');$('#scanner').innerHTML=r.map(x=>`<tr><td><b>${x.symbol}</b></td><td>—</td><td>—</td><td>—</td><td>${Math.round(x.ml_probability*100)}%</td><td><span class="tag">${x.signal}</span></td></tr>`).join('');}catch(e){}}
+async function loadSentiment(){try{let r=await api('/api/platform/news?symbol='+encodeURIComponent($('#ticker').value)+'&limit=30');let body=r.map(x=>`<tr><td>${x.source||'Licensed News'}</td><td>${x.title}</td><td class="${(x.sentiment||0)>0?'up':(x.sentiment||0)<0?'down':''}">${x.finbert_label||'Pending'}</td><td>${x.sentiment==null?'—':Number(x.sentiment).toFixed(2)}</td></tr>`).join('');if(body)document.querySelector('#sentiment tbody').innerHTML=body;}catch(e){}}
+async function loadProviders(){try{let r=await api('/api/platform/sources');$('#providersOut').innerHTML=r.map(x=>`<div class="row" style="padding:10px 0;border-bottom:1px solid var(--line)"><span><b>${x.name}</b><br><small class=muted>${x.kind} · ${x.provider}</small></span><b class=up>${x.status}</b></div>`).join('');}catch(e){$('#providersOut').innerHTML='<div class=notice>Connect/authenticate ke backend untuk melihat registry provider.</div>'}}
+async function startPaperUI(){try{$('#paperOut').textContent=JSON.stringify(await api('/api/ops/paper/start?days=60',{method:'POST'}),null,2)}catch(e){$('#paperOut').textContent=e.message}}
+async function saveTradingUI(){try{$('#liveOut').textContent=JSON.stringify(await api('/api/trading/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:$('#tradeMode').value,enabled:$('#liveEnabled').checked,max_order_value:+$('#maxOrder').value,max_position_pct:+$('#maxPos').value,max_daily_loss_pct:+$('#maxLoss').value,require_manual_approval:$('#manualApproval').checked})}),null,2)}catch(e){$('#liveOut').textContent=e.message}}
+async function certifyUI(){try{$('#opsOut').textContent=JSON.stringify(await api('/api/ops/broker-certification'),null,2)}catch(e){$('#opsOut').textContent=e.message}}
+async function reconcileUI(){try{$('#opsOut').textContent=JSON.stringify(await api('/api/ops/reconcile'),null,2)}catch(e){$('#opsOut').textContent=e.message}}
+async function breakerUI(){try{$('#opsOut').textContent=JSON.stringify(await api('/api/ops/circuit-breaker/GLOBAL',{method:'POST'}),null,2)}catch(e){$('#opsOut').textContent=e.message}}
+async function flattenUI(){if(!confirm('Emergency flatten?'))return;try{$('#opsOut').textContent=JSON.stringify(await api('/api/ops/emergency-flatten',{method:'POST'}),null,2)}catch(e){$('#opsOut').textContent=e.message}}
+const rows=[['BBCA','9,425','+1.18%','56.8','72%','BULLISH'],['BBRI','4,210','+0.84%','53.2','68%','BULLISH'],['TLKM','3,180','-0.31%','48.9','44%','NEUTRAL'],['BMRI','5,950','+1.52%','61.3','79%','BULLISH'],['ASII','5,100','-0.62%','42.7','39%','BEARISH']];$('#scanner').innerHTML=rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td class="${r[2][0]=='+'?'up':'down'}">${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td><span class="tag">${r[5]}</span></td></tr>`).join('');
+
+async function refreshDataModels(){
+  try{
+    const h=await api('/api/platform/health');
+    document.getElementById('dmBars').textContent=h.pipeline.market_bars;
+    document.getElementById('dmNews').textContent=h.pipeline.news;
+    document.getElementById('dmFeatures').textContent=h.pipeline.features;
+    document.getElementById('dmSignals').textContent=h.pipeline.signals;
+    const s=await api('/api/platform/sources');
+    document.getElementById('dmSources').innerHTML=s.map(x=>`<tr><td>${x.name}</td><td>${x.kind}</td><td>${x.provider}</td><td>${x.status}</td></tr>`).join('');
+  }catch(e){document.getElementById('dmSources').innerHTML=`<tr><td colspan=4>${e.message}</td></tr>`}
+}
+async function opCall(path,method='GET'){
+  try{const r=await api(path,{method});document.getElementById('opsResult').textContent=JSON.stringify(r,null,2);return r}
+  catch(e){document.getElementById('opsResult').textContent=e.message}
+}
+function runBrokerCert(){opCall('/api/ops/broker-certification')}
+function runReconcile(){opCall('/api/ops/reconcile')}
+function runPaperGate(){opCall('/api/ops/paper/start?days=60','POST')}
+function runCircuitBreaker(){opCall('/api/ops/circuit-breaker/GLOBAL','POST')}
+function runEmergencyFlatten(){if(confirm('Emergency flatten semua posisi live?'))opCall('/api/ops/emergency-flatten','POST')}
+
+
+async function refreshAIAnalysis(){
+  try{
+    const r=await api('/api/analysis/ensemble');
+    const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v??'—'};
+    set('aiML',r.ml_probability!=null?(r.ml_probability*100).toFixed(1)+'%':'—');
+    set('aiLSTM',r.lstm_probability!=null?(r.lstm_probability*100).toFixed(1)+'%':'—');
+    set('aiFinBERT',r.finbert_score!=null?r.finbert_score.toFixed(3):'—');
+    set('aiEnsemble',r.ensemble_score!=null?r.ensemble_score.toFixed(3):'—');
+    set('aiSignal',r.signal||'—');
+    set('aiConfidence',r.confidence!=null?(r.confidence*100).toFixed(1)+'%':'—');
+    set('aiTechnical',r.technical_score!=null?r.technical_score.toFixed(3):'—');
+    set('aiStrategy',r.strategy_score!=null?r.strategy_score.toFixed(3):'—');
+    const tag=document.getElementById('aiSignalTag'); if(tag) tag.textContent=r.signal||'READY';
+  }catch(e){
+    const tag=document.getElementById('aiSignalTag'); if(tag) tag.textContent='API NOT CONNECTED';
+  }
+}
+
+
+// --- StockMind Market Research UI ---
+const smDemoNews = [
+  {symbol:"BBCA",title:"Sektor perbankan menjadi perhatian investor di tengah ekspektasi penurunan suku bunga",source:"Demo Market Feed",published_at:new Date().toISOString(),hype_score:8.6,sentiment:.62,url:"#"},
+  {symbol:"BMRI",title:"Investor mencermati pertumbuhan kredit dan outlook laba bank besar",source:"Demo Market Feed",published_at:new Date(Date.now()-35*60000).toISOString(),hype_score:8.2,sentiment:.55,url:"#"},
+  {symbol:"ANTM",title:"Permintaan komoditas dan hilirisasi kembali menjadi katalis emiten tambang",source:"Demo Market Feed",published_at:new Date(Date.now()-80*60000).toISOString(),hype_score:7.9,sentiment:.48,url:"#"},
+  {symbol:"TLKM",title:"Prospek data center dan digital infrastructure diperhatikan pasar",source:"Demo Market Feed",published_at:new Date(Date.now()-135*60000).toISOString(),hype_score:7.4,sentiment:.41,url:"#"},
+  {symbol:"BBRI",title:"Arus dana investor dan pertumbuhan kredit menjadi fokus trading session",source:"Demo Market Feed",published_at:new Date(Date.now()-190*60000).toISOString(),hype_score:7.1,sentiment:.38,url:"#"}
+];
+function smFormatDate(x){try{return new Intl.DateTimeFormat('id-ID',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Jakarta'}).format(new Date(x))}catch(e){return x}}
+function smSentLabel(s){return s>.18?'Positive':s<-.18?'Negative':'Neutral'}
+function renderNews(items){
+  const list=$('#newsList'); if(!list)return;
+  list.innerHTML=(items||[]).map((x,i)=>`<div class="news-item" onclick='selectNews(${JSON.stringify(x).replace(/'/g,"&#39;")})'>
+    <div class="news-meta"><span>${x.symbol||'IDX'} · ${smFormatDate(x.published_at)}</span><span class="hype">Hype ${Number(x.hype_score||0).toFixed(1)}</span></div>
+    <div class="news-title">${x.title||''}</div>
+    <div class="news-source">${x.source||'Unknown source'}</div>
+  </div>`).join('')||'<div class="notice">Tidak ada hasil.</div>';
+}
+function selectNews(x){
+  $('#selectedNewsMeta').textContent=`${x.symbol||'IDX'} · ${smFormatDate(x.published_at)} · ${x.source||'Source'} · Sentiment ${smSentLabel(Number(x.sentiment||0))}`;
+  $('#selectedNewsPost').textContent=`🚨 AI BREAKING NEWS — ${x.symbol||'IDX'}\n\n${x.title}\n\nAnalisa cepat: berita ini mendapat hype score ${Number(x.hype_score||0).toFixed(1)}/10 dengan sentimen ${smSentLabel(Number(x.sentiment||0))}. Gunakan sebagai bahan screening dan validasi dengan harga, volume, teknikal, fundamental, serta broker flow.\n\nSumber: ${x.source||'Source'}\n${x.url||''}`;
+}
+async function searchBreakingNews(){
+  const symbol=($('#newsSymbol').value||$('#ticker').value||'BBCA').toUpperCase().trim();
+  $('#newsFeedStatus').textContent='LOADING…';
+  try{const r=await api('/api/breaking-news/search/'+encodeURIComponent(symbol));renderNews(r);$('#newsFeedStatus').textContent='LIVE / PROVIDER';if(r[0])selectNews(r[0])}
+  catch(e){const r=smDemoNews.filter(x=>x.symbol===symbol).concat(smDemoNews);renderNews(r.slice(0,10));$('#newsFeedStatus').textContent='DEMO / BACKEND OFFLINE';if(r[0])selectNews(r[0])}
+}
+async function loadHypeNews(){
+  try{
+    const r=await api('/api/breaking-news/hype?limit=5');
+    $('#hypeSummary').innerHTML=r.map(x=>`<div class="row"><span><b>${x.symbol||'IDX'}</b> ${x.title}</span><b class="hype">${Number(x.hype_score||0).toFixed(1)}</b></div>`).join('');
+  }catch(e){
+    $('#hypeSummary').innerHTML=smDemoNews.map(x=>`<div class="row"><span><b>${x.symbol}</b> ${x.title}</span><b class="hype">${x.hype_score}</b></div>`).join('');
+  }
+}
+async function generateNewsPosts(){
+  $('#postStatus').textContent='Generating…';
+  try{
+    const r=await api('/api/breaking-news/posts?limit=5');
+    $('#postStatus').textContent=`${r.length} post siap dibuat otomatis dari feed yang sudah di-ranking.`;
+    if(r[0]){renderNews(r);selectNews(r[0])}
+  }catch(e){
+    $('#postStatus').textContent='Demo: post template siap. Hubungkan backend + provider berita untuk auto-post real-time.';
+    renderNews(smDemoNews);selectNews(smDemoNews[0]);
+  }
+}
+async function loadBandar(){
+  const symbol=($('#bandarSymbol').value||'BBCA').toUpperCase();
+  try{
+    const r=await api('/api/bandarmology/'+encodeURIComponent(symbol));
+    $('#bandarStatus').textContent=r.data_status||'Provider';
+    $('#brokerSummary').innerHTML=r.broker_summary.map(x=>`<tr><td><b>${x.code}</b> ${x.name}</td><td>${x.buy.toFixed(2)}</td><td>${x.sell.toFixed(2)}</td><td class="${x.net>=0?'up':'down'}">${x.net.toFixed(2)}</td></tr>`).join('');
+    $('#accumulation').textContent=r.broker_distribution.accumulation+'%';$('#distribution').textContent=r.broker_distribution.distribution+'%';
+    $('#brokerFlow').textContent=r.broker_flow.toFixed(2);
+    $('#foreignFlow').textContent=r.trade_flow.foreign.toFixed(2);$('#retailFlow').textContent=r.trade_flow.retail.toFixed(2);$('#instFlow').textContent=r.trade_flow.institution.toFixed(2);
+    $('#bandarScore').textContent=r.ai_score+'/100';$('#bandarAsOf').textContent=smFormatDate(r.asof);
+    $('#epsGrowth').textContent=r.fundachart.eps_growth+'%';$('#roe').textContent=r.fundachart.roe+'%';$('#revGrowth').textContent=r.fundachart.revenue_growth+'%';
+    $('#bandarInterpret').textContent=r.ai_score>=65?'Accumulation':'Wait / validate';
+    chart('brokerChart',r.ai_score/10,r.ai_score>=55);
+  }catch(e){
+    const base={broker_summary:[['YP','Maybank Sekuritas',15.2,8.4,6.8],['CC','Mandiri Sekuritas',13.6,10.1,3.5],['ZP','Mirae Asset',11.7,12.2,-.5],['AK','UBS Sekuritas',8.8,7.3,1.5],['NI','BNI Sekuritas',6.4,9.5,-3.1]].map(x=>({code:x[0],name:x[1],buy:x[2],sell:x[3],net:x[4]}))};
+    $('#bandarSummary')?.remove?.();
+    $('#brokerSummary').innerHTML=base.broker_summary.map(x=>`<tr><td><b>${x.code}</b> ${x.name}</td><td>${x.buy}</td><td>${x.sell}</td><td class="${x.net>=0?'up':'down'}">${x.net}</td></tr>`).join('');
+    $('#accumulation').textContent='62.5%';$('#distribution').textContent='37.5%';$('#brokerFlow').textContent='+8.2';$('#foreignFlow').textContent='+5.1';$('#retailFlow').textContent='-1.7';$('#instFlow').textContent='+6.8';$('#bandarScore').textContent='71/100';$('#bandarAsOf').textContent=smFormatDate(new Date());$('#epsGrowth').textContent='14.2%';$('#roe').textContent='21.1%';$('#revGrowth').textContent='11.8%';$('#bandarInterpret').textContent='Accumulation';$('#bandarStatus').textContent='DEMO / provider pending';chart('brokerChart',7.1,true);
+  }
+}
+let presetCache={};
+async function selectPreset(name,btn){
+  document.querySelectorAll('.preset-tabs button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');
+  try{
+    if(!presetCache[name]){const r=await api('/api/screener/presets');r.forEach(x=>presetCache[x.name]=x.rules)}
+  }catch(e){
+    presetCache={Bandarmology:[{field:'broker_flow',op:'> ',value:15},{field:'accumulation',op:'>',value:60},{field:'volume_ratio',op:'>',value:1.5}],Teknikal:[{field:'rsi',op:'>=',value:50},{field:'ma20_ma50',op:'>',value:0},{field:'macd',op:'>',value:0}],Fundamental:[{field:'roe',op:'>',value:12},{field:'eps_growth',op:'>',value:5},{field:'debt_equity',op:'<',value:1.5}]};
+  }
+  const rules=presetCache[name]||[];$('#screenPreset').value=name;$('#presetRules').innerHTML=rules.map(x=>`<span class="rule-chip">${x.field} ${x.op} ${x.value}</span>`).join('');
+}
+function runPresetScreen(){
+  const name=$('#screenPreset').value,symbol=($('#screenSymbol').value||'BBCA').toUpperCase();
+  $('#screenResult').innerHTML=`<b>${symbol}</b> · preset <b>${name}</b> siap digunakan. <span class="muted">Hasil final perlu dipasok quote/fundamental/broker provider agar screening bersifat real-time.</span>`;
+}
+function fmtDateID(x){try{return new Date(x+'T00:00:00').toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})}catch(e){return x}}
+function planetLabel(x){return ({sun:'☉ Sun',moon:'☽ Moon',mercury:'☿ Mercury',venus:'♀ Venus',mars:'♂ Mars',jupiter:'♃ Jupiter',saturn:'♄ Saturn',uranus:'♅ Uranus',neptune:'♆ Neptune',pluto:'♇ Pluto'}[x]||x)}
+function renderAstroWheel(rows){
+  const cx=115,cy=115,r=83; let ticks=''; let labels='';
+  for(let i=0;i<12;i++){const a=(i*30-90)*Math.PI/180;const x1=cx+Math.cos(a)*(r-7),y1=cy+Math.sin(a)*(r-7),x2=cx+Math.cos(a)*r,y2=cy+Math.sin(a)*r;const tx=cx+Math.cos(a)*(r+18),ty=cy+Math.sin(a)*(r+18)+3; ticks+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#64748b" stroke-width="1"/><text x="${tx}" y="${ty}" fill="#9fb0c4" text-anchor="middle" font-size="8">${i+1}</text>`}
+  rows.forEach((p,i)=>{const lon=Number(p.longitude||0),a=(lon-90)*Math.PI/180,x=cx+Math.cos(a)*(r-20),y=cy+Math.sin(a)*(r-20);labels+=`<circle cx="${x}" cy="${y}" r="7" fill="${i%3===0?'#f59e0b':i%3===1?'#38bdf8':'#34d399'}"/><text x="${x}" y="${y+3}" fill="#07111d" text-anchor="middle" font-size="7" font-weight="900">${(p.body||'?').slice(0,2).toUpperCase()}</text>`});
+  const aspects=[]; for(let i=0;i<rows.length;i++){for(let j=i+1;j<rows.length;j++){const a=rows[i].longitude||0,b=rows[j].longitude||0,d=Math.min(Math.abs(a-b),360-Math.abs(a-b));if([0,60,90,120,180].some(t=>Math.abs(d-t)<=4)){const aa=(a-90)*Math.PI/180,bb=(b-90)*Math.PI/180;const x1=cx+Math.cos(aa)*(r-20),y1=cy+Math.sin(aa)*(r-20),x2=cx+Math.cos(bb)*(r-20),y2=cy+Math.sin(bb)*(r-20);aspects.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${Math.abs(d-90)<=4?'#ef4444':'#38bdf8'}" opacity=".55" stroke-width="1"/>`)}}}
+  $('#astroWheel').innerHTML=`<svg viewBox="0 0 230 230"><circle cx="115" cy="115" r="83" fill="none" stroke="#eab308" stroke-width="1.2"/><circle cx="115" cy="115" r="53" fill="none" stroke="#334155" stroke-width="1"/><circle cx="115" cy="115" r="23" fill="rgba(15,23,42,.8)" stroke="#475569" stroke-width="1"/>${ticks}${aspects.join('')}${labels}<text x="115" y="119" fill="#e5eefc" text-anchor="middle" font-size="10" font-weight="800">${$('#astroSymbol').value.toUpperCase()}</text></svg>`;
+}
+function renderAstroChart(series){
+  if(!series||series.length<2){$('#astroPriceChart').innerHTML='<div class="muted">Price series belum tersedia.</div>';return}
+  const w=760,h=210,pad=18,vals=series.map(x=>Number(x.close)),min=Math.min(...vals),max=Math.max(...vals),span=Math.max(1,max-min);let d='';
+  series.forEach((x,i)=>{const X=pad+(i/(series.length-1))*(w-pad*2),Y=h-pad-((x.close-min)/span)*(h-pad*2);d+=(i?'L':'M')+X.toFixed(1)+' '+Y.toFixed(1)+' '});
+  const y1=h-pad-((min-min)/span)*(h-pad*2),y2=h-pad-((max-min)/span)*(h-pad*2);
+  $('#astroPriceChart').innerHTML=`<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs><linearGradient id="astroLine" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#34d399" stop-opacity=".9"/><stop offset="100%" stop-color="#38bdf8" stop-opacity=".25"/></linearGradient></defs><rect x="0" y="0" width="${w}" height="${h}" fill="rgba(2,6,23,.18)"/><path d="${d}" fill="none" stroke="url(#astroLine)" stroke-width="3"/><line x1="0" y1="${y2}" x2="${w}" y2="${y2}" stroke="#eab308" stroke-dasharray="4 5" opacity=".5"/><line x1="0" y1="${y1}" x2="${w}" y2="${y1}" stroke="#ef4444" stroke-dasharray="4 5" opacity=".35"/><text x="${w-70}" y="${y2-5}" fill="#fde047" font-size="10">HIGH ${Math.round(max)}</text><text x="${w-70}" y="${y1-5}" fill="#fca5a5" font-size="10">LOW ${Math.round(min)}</text></svg>`;
+}
+
+function buildDemoAstro(){
+  const natal=[
+    ['sun','Cancer',19],['moon','Cancer',22],['mercury','Leo',16],['venus','Virgo',5],['mars','Virgo',9],['jupiter','Aries',3],['saturn','Libra',29],['uranus','Aries',0],['neptune','Aquarius',25],['pluto','Capricorn',0]
+  ].map((x,i)=>({body:x[0],sign:x[1],sign_degree:x[2],longitude:({Cancer:90,Leo:120,Virgo:150,Aries:0,Libra:180,Aquarius:300,Capricorn:270}[x[1]]||0)+x[2],retrograde:false}));
+  const dates=['2026-08-20','2026-08-25','2026-09-14','2026-09-18','2026-10-18'];
+  const series=Array.from({length:70},(_,i)=>({date:new Date(Date.now()-((69-i)*86400000)).toISOString().slice(0,10),close:Math.round(680+110*Math.sin(i/8)+40*Math.sin(i/2.9)+i*.45),high:0,low:0}));
+  series.forEach(x=>{x.high=x.close+18;x.low=x.close-18});
+  return {symbol:($('#astroSymbol').value||'BUVA').toUpperCase(),analysis_date:$('#astroDate').value||new Date().toISOString().slice(0,10),listing_date:'2010-07-12',market_data_status:'DEMO · BUVA sample layout',ephemeris_status:'Demo ephemeris',natal,transit:natal,transit_highlights:[
+    {planet:'Jupiter',position:'Cancer',degree:8,aspect:'Trine Jupiter Natal',interpretation:'Support pertumbuhan, peluang, ekspansi — tetap validasi harga.'},
+    {planet:'Neptune',position:'Aries',degree:4,aspect:'Conjunct Jupiter Natal',interpretation:'Visi / idealisme tinggi, perlu konfirmasi realisasi.'},
+    {planet:'Pluto',position:'Aquarius',degree:4,aspect:'Sextile Jupiter Natal',interpretation:'Transformasi dan restrukturisasi aset.'},
+    {planet:'Saturn',position:'Aries',degree:10,aspect:'Square Mars Natal',interpretation:'Tekanan disiplin, biaya, dan execution.'},
+    {planet:'Uranus',position:'Taurus',degree:28,aspect:'Square Sun/Moon Natal',interpretation:'Volatilitas tinggi, breakout atau breakdown.'}
+  ],price:{current:740,low:680,high:1015,low_date:'2026-06-30',high_date:'2026-07-21',series},fibonacci_levels:[
+    {level:'100% High',ratio:'0.0%',price:1015,note:'Puncak 21 Juli 2026'},
+    {level:'78.6%',ratio:'23.6%',price:752,note:'Deep Retracement Zone'},
+    {level:'61.8%',ratio:'38.2%',price:808,note:'Area Resist / Rebound'},
+    {level:'50.0%',ratio:'50.0%',price:848,note:'Mid Retracement'},
+    {level:'38.2%',ratio:'61.8%',price:887,note:'Area Resist Kuat'},
+    {level:'23.6%',ratio:'78.6%',price:959,note:'Last Support sebelum High'},
+    {level:'0% Low',ratio:'100%',price:680,note:'Dasar 30 Juni 2026'}
+  ],time_from_low:dates.map((d,i)=>({interval:[8,13,21,34,55][i],date:d})),time_from_high:['2026-07-29','2026-08-03','2026-08-11','2026-08-24','2026-09-14'].map((d,i)=>({interval:[8,13,21,34,55][i],date:d})),major_windows:[
+    {name:'WINDOW A',period:'20–26 Agustus 2026',focus:'Pusat 24 Agustus · konfluensi Fibonacci + transit',tone:'red'},
+    {name:'WINDOW B',period:'11–16 September 2026',focus:'Follow-up Fibonacci / breakout confirmation',tone:'gold'},
+    {name:'WINDOW C',period:'24 Sep–14 Okt 2026',focus:'Corporate-event volatility / rights issue window',tone:'green'}
+  ],stages:{financial:68,fibonacci_time:62,technical:74,fundamental:71,bandarmology:66},overall:68.2,signal:'BULLISH',scenario:[
+    {case:'BULL CASE',condition:'680 bertahan + break 783',target:'840 → 925 → 1.015',probability:40,tone:'green'},
+    {case:'BASE CASE',condition:'680 bertahan + reclaim 848',target:'700 → 840 → 925',probability:40,tone:'gold'},
+    {case:'BEAR CASE',condition:'680 jebol + volume besar',target:'620 → 560 → 500+',probability:20,tone:'red'}
+  ],strategy:['Akumulasi bertahap di area 700–760','Konfirmasi pertama: break & close di atas 783','Konfirmasi kuat: break & close di atas 840','Major confirmation: break & close di atas 925','Cut loss: jika 680 jebol dengan volume besar','Profit taking: 887–1.015'],disclaimer:'Demo layout berbasis contoh BUVA. Kerangka astro-market bersifat eksperimental dan bukan metode ilmiah tervalidasi atau rekomendasi beli/jual.'};
+}
+
+async function runAstroDeepDive(){
+  const symbol=($('#astroSymbol').value||'BUVA').trim().toUpperCase();
+  const date=$('#astroDate').value||new Date().toISOString().slice(0,10);
+  $('#astroSignal').textContent='LOADING'; $('#astroProviderStatus').textContent='Mengambil ephemeris + market data…';
+  try{
+    const r=await api('/api/astrology/deep-dive/'+encodeURIComponent(symbol)+'?analysis_date='+encodeURIComponent(date)).catch(()=>buildDemoAstro());
+    $('#astroSignal').textContent=r.signal; $('#astroSignalMini').textContent=r.signal; $('#astroProviderStatus').textContent=(r.market_data_status||'Provider pending')+' · analysis '+fmtDateID(r.analysis_date); $('#astroNatalMeta').textContent='IPO '+fmtDateID(r.listing_date); $('#astroDate').value=r.analysis_date;
+    $('#astroNatalTable').innerHTML=(r.natal||[]).map(p=>`<tr><td>${planetLabel(p.body)}</td><td>${p.sign||'—'}</td><td>${Number(p.sign_degree||0).toFixed(1)}°</td></tr>`).join('');
+    renderAstroWheel(r.natal||[]);
+    $('#astroTransitTable').innerHTML=(r.transit_highlights||[]).map(x=>`<tr><td>${x.planet}</td><td>${x.position} ${x.degree}°</td><td>${x.aspect}</td><td>${x.interpretation}</td></tr>`).join('');
+    $('#astroTransitConclusion').textContent=(r.transit_highlights||[]).length?`${r.transit_highlights.length} transit utama tersedia. Gunakan area waktu ini untuk konfirmasi trend, bukan sebagai sinyal tunggal.`:'Transit provider belum tersedia; gunakan demo hanya untuk layout.';
+    $('#astroTimeTable').innerHTML=(r.time_from_low||[]).map((x,i)=>`<tr><td>${x.interval}</td><td>${fmtDateID(x.date)}</td><td>${fmtDateID((r.time_from_high||[])[i]?.date||x.date)}</td></tr>`).join('');
+    $('#astroTimeCluster').textContent=`${fmtDateID((r.time_from_low||[])[4]?.date||'—')} · ${fmtDateID((r.time_from_high||[])[4]?.date||'—')}`; $('#astroClusterShort').textContent=fmtDateID((r.time_from_low||[])[4]?.date||'—');
+    $('#astroFibTable').innerHTML=(r.fibonacci_levels||[]).map(x=>`<tr><td>${x.level}</td><td>${x.ratio}</td><td><b>${x.price}</b></td><td>${x.note}</td></tr>`).join('');
+    $('#astroCurrentPrice').textContent=Number(r.price.current).toLocaleString('id-ID'); $('#astroLowDate').textContent=fmtDateID(r.price.low_date); $('#astroCurrentDate').textContent=fmtDateID(r.analysis_date); $('#astroHighDate').textContent=fmtDateID(r.price.high_date); $('#astroPriceMeta').textContent=`Low ${r.price.low} · High ${r.price.high} · Current ${r.price.current}`; renderAstroChart(r.price.series||[]);
+    $('#astroWindows').innerHTML=(r.major_windows||[]).map(x=>`<div class="astro-window ${x.tone}"><b>${x.name}</b><div>${x.period}</div><div class="astro-mini">${x.focus}</div></div>`).join('');
+    const allTrans=(r.transit||[]).filter(x=>['jupiter','saturn','uranus','neptune','pluto'].includes(x.body)); $('#astroCycleTable').innerHTML=allTrans.map(x=>`<tr><td>${planetLabel(x.body)}</td><td>${x.sign||'—'} ${Number(x.sign_degree||0).toFixed(1)}°</td><td>${x.retrograde?'RETRO':'Direct'}</td><td>${x.body==='jupiter'?'Expansion/support':x.body==='saturn'?'Discipline/test':'Volatility/structural change'}</td></tr>`).join('');
+    $('#astroScenarioTable').innerHTML=(r.scenario||[]).map(x=>`<tr><td class="${x.tone==='green'?'astro-good':x.tone==='gold'?'astro-warn':'astro-bad'}"><b>${x.case}</b></td><td>${x.condition}</td><td>${x.target}</td><td>${x.probability}%</td></tr>`).join('');
+    $('#astroInterpretation').textContent=r.signal==='BULLISH'?'Bull case memiliki bobot kerja lebih tinggi, tetapi konfirmasi harga tetap wajib.':r.signal==='BEARISH'?'Bear case lebih dominan; prioritaskan invalidation level.':'Base case adalah skenario utama sampai breakout/breakdown terkonfirmasi.';
+    $('#astroStrategy').innerHTML=(r.strategy||[]).map((x,i)=>`<div class="row"><span>${i+1}. ${x}</span><span class="tag">${i===5?'TAKE PROFIT':'RULE'}</span></div>`).join('');
+    $('#astroStageScores').textContent=Object.entries(r.stages||{}).map(([k,v])=>`${k} ${v}`).join(' · '); $('#astroDisclaimer').textContent=r.disclaimer; $('#astroConnectionGuide').textContent=(r.ephemeris_status||'Demo')==='Provider live'?'Provider ephemeris aktif. Posisi planet natal/transit berasal dari provider.':'Demo aktif. Hubungkan provider agar posisi planet menjadi data live.';
+    $('#astroStagesTable').innerHTML=Object.entries(r.stages||{}).map(([k,v])=>`<tr><td>${k.replace('_',' ')}</td><td><b>${v}</b></td><td>${v>=70?'Strong':v>=55?'Moderate':'Weak'}</td></tr>`).join('');
+  }catch(e){
+    $('#astroSignal').textContent='DEMO'; $('#astroProviderStatus').textContent='Demo layout aktif';
+  }
+}
+function runAstro(){return runAstroDeepDive()}
+document.addEventListener('DOMContentLoaded',()=>{
+  if($('#astroDate'))$('#astroDate').value=new Date().toISOString().slice(0,10);
+  if($('#astro'))setTimeout(()=>runAstroDeepDive(),300);
+  selectPreset('Bandarmology',document.querySelector('.preset-tabs button'));
+  loadHypeNews();
+  searchBreakingNews();
+});
+
+</script>
+
+<script id="STOCKMIND_AUTH_V1">
+(function(){
+ const USERNAME="ARTEK10", PASSWORD="Qwerty@321", KEY="stockmind_local_auth_3d_v1";
+ function lock(){document.body.classList.add("stockmind-locked");const x=document.getElementById("stockmindLogin");if(x)x.style.display="flex";}
+ function unlock(){document.body.classList.remove("stockmind-locked");const x=document.getElementById("stockmindLogin");if(x)x.style.display="none";}
+ window.stockmindLogout=function(){try{sessionStorage.removeItem(KEY)}catch(e){}lock();};
+ function init(){
+  lock();
+  try{if(sessionStorage.getItem(KEY)==="1"){unlock();return;}}catch(e){}
+  const f=document.getElementById("stockmindLoginForm"),u=document.getElementById("stockmindUsername"),p=document.getElementById("stockmindPassword"),e=document.getElementById("stockmindLoginError");
+  if(!f)return;
+  f.addEventListener("submit",function(ev){
+   ev.preventDefault();
+   if((u.value||"").trim()===USERNAME && (p.value||"")===PASSWORD){
+    try{sessionStorage.setItem(KEY,"1")}catch(x){}
+    e.textContent="";unlock();
+   }else{e.textContent="Username atau password salah.";p.value="";p.focus();}
+  });
+ }
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+})();
+</script>
+
+</body></html>

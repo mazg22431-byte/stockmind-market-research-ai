@@ -1,0 +1,29 @@
+services:
+  api:
+    build: ./backend
+    env_file: ./backend/.env
+    ports: ["8000:8000"]
+    depends_on: [postgres, redis]
+  worker:
+    build: ./backend
+    command: celery -A app.tasks worker --loglevel=INFO
+    env_file: ./backend/.env
+    depends_on: [postgres, redis]
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: stockmind
+      POSTGRES_USER: stockmind
+      POSTGRES_PASSWORD: stockmind
+    volumes: [pgdata:/var/lib/postgresql/data]
+  redis:
+    image: redis:7-alpine
+volumes: {pgdata: {}}
+
+  celery-beat:
+    build: ./backend
+    command: celery -A app.core.celery beat -l info
+    env_file: ./backend/.env
+    depends_on:
+      - postgres
+      - redis
